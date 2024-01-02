@@ -2,7 +2,7 @@ NAME := outfile
 
 CC := gcc
 
-CFLAGS := -Wall -Werror -Wextra -g
+CFLAGS := -Wall -Werror -Wextra -g -fsanitize=address
 
 SRCS := mini_serv.c \
 
