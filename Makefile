@@ -6,7 +6,7 @@ CFLAGS := -Wall -Werror -Wextra -g -fsanitize=address
 
 SRCS := mini_serv.c \
 
-OBJS := ${SRCS:.o=.c}
+OBJS := $(SRCS:.o=.c)
 
 all: $(NAME)
 
@@ -16,7 +16,7 @@ $(NAME): $(OBJS)
 clean:
 	rm -rf *.o *.dSYM
 
-fclean: clean
+fclean:
 	rm -rf $(NAME)
 
 re: fclean all
