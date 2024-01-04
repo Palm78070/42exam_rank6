@@ -6,7 +6,7 @@ CFLAGS := -Wall -Werror -Wextra -g -fsanitize=address
 
 SRCS := mini_serv.c \
 
-OBJS := $(SRCS:.o=.c)
+OBJS := $(SRCS:.c=.o)
 
 all: $(NAME)
 
@@ -22,6 +22,7 @@ fclean: clean
 re: fclean all
 
 .PHONY: all clean fclean re
+
 
 # NAME := outfile
 
