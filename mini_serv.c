@@ -1,9 +1,10 @@
 #include <stdio.h>
-#include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 #include <string.h>
-#include <netinet/in.h>
+#include <stdlib.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
 
 int maxSock;
 char *msg = NULL;
@@ -43,20 +44,21 @@ char *str_join(char *buff, char *add)
 
 int extract_msg(char **buff, char **msg)
 {
-	char *newbuff;
 	int i = 0;
-	*msg = 0;
+	char *newbuff;
 
+	*msg = 0;
 	if (*buff == 0)
 		return (0);
 	while ((*buff)[i])
 	{
 		if ((*buff)[i] == '\n')
 		{
-			newbuff = calloc(strlen(*buff + i) + 1, sizeof(*newbuff));
+			newbuff = calloc(strlen(*buff + i + 1), sizeof(*newbuff));
 			if (!newbuff)
 				return (-1);
-			strcpy(newbuff, *buff + i + 1);
+			newbuff[0] = 0;
+			strcpy(newbuff, (*buff + i + 1));
 			*msg = *buff;
 			(*msg)[i + 1] = 0;
 			*buff = newbuff;
@@ -84,20 +86,18 @@ int main(int argc, char **argv)
 {
 	if (argc != 2)
 		ft_error("Wrong number of arguments\n");
-
-	int sockfd, connfd, cliId;
+	int sockfd, cliId, connfd;
 	cliId = 0;
-	socklen_t len_cli;
 	struct sockaddr_in servaddr, cliaddr;
 	bzero(&servaddr, sizeof(servaddr));
-	len_cli = sizeof(cliaddr);
+	socklen_t len_cli = sizeof(cliaddr);
 
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 	servaddr.sin_port = htons(atoi(argv[1]));
 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (socket < 0)
+	if (sockfd < 0)
 		ft_error("Fatal error\n");
 
 	if (bind(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr)) < 0)
@@ -115,7 +115,6 @@ int main(int argc, char **argv)
 		rd_set = wrt_set = atv_set;
 		if (select(maxSock + 1, &rd_set, &wrt_set, 0, 0) <= 0)
 			continue;
-
 		if (FD_ISSET(sockfd, &rd_set))
 		{
 			connfd = accept(sockfd, (struct sockaddr *)&cliaddr, &len_cli);
@@ -166,15 +165,14 @@ int main(int argc, char **argv)
 }
 
 // #include <stdio.h>
-// #include <string.h>
-// #include <unistd.h>
 // #include <stdlib.h>
+// #include <unistd.h>
+// #include <string.h>
 // #include <netinet/in.h>
 // #include <sys/socket.h>
 
 // int maxSock;
-
-// char *msg;
+// char *msg = NULL;
 
 // int g_cliId[5000];
 // char *cliBuff[5000];
@@ -211,19 +209,20 @@ int main(int argc, char **argv)
 
 // int extract_msg(char **buff, char **msg)
 // {
+// 	char *newbuff;
 // 	int i = 0;
 // 	*msg = 0;
-// 	if (buff == 0)
+
+// 	if (*buff == 0)
 // 		return (0);
-// 	char *newbuff;
 // 	while ((*buff)[i])
 // 	{
 // 		if ((*buff)[i] == '\n')
 // 		{
-// 			newbuff = calloc(strlen(*buff + i + 1), sizeof(*newbuff));
+// 			newbuff = calloc(strlen(*buff + i) + 1, sizeof(*newbuff));
 // 			if (!newbuff)
 // 				return (-1);
-// 			strcpy(newbuff, (*buff + i + 1));
+// 			strcpy(newbuff, *buff + i + 1);
 // 			*msg = *buff;
 // 			(*msg)[i + 1] = 0;
 // 			*buff = newbuff;
@@ -251,18 +250,20 @@ int main(int argc, char **argv)
 // {
 // 	if (argc != 2)
 // 		ft_error("Wrong number of arguments\n");
+
 // 	int sockfd, connfd, cliId;
 // 	cliId = 0;
 // 	socklen_t len_cli;
 // 	struct sockaddr_in servaddr, cliaddr;
 // 	bzero(&servaddr, sizeof(servaddr));
+// 	len_cli = sizeof(cliaddr);
 
 // 	servaddr.sin_family = AF_INET;
 // 	servaddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
 // 	servaddr.sin_port = htons(atoi(argv[1]));
 
 // 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-// 	if (sockfd < 0)
+// 	if (socket < 0)
 // 		ft_error("Fatal error\n");
 
 // 	if (bind(sockfd, (const struct sockaddr *)&servaddr, sizeof(servaddr)) < 0)
@@ -271,7 +272,6 @@ int main(int argc, char **argv)
 // 	if (listen(sockfd, SOMAXCONN) < 0)
 // 		ft_error("Fatal error\n");
 
-// 	len_cli = sizeof(cliaddr);
 // 	maxSock = sockfd;
 // 	FD_ZERO(&atv_set);
 // 	FD_SET(sockfd, &atv_set);
@@ -281,6 +281,7 @@ int main(int argc, char **argv)
 // 		rd_set = wrt_set = atv_set;
 // 		if (select(maxSock + 1, &rd_set, &wrt_set, 0, 0) <= 0)
 // 			continue;
+
 // 		if (FD_ISSET(sockfd, &rd_set))
 // 		{
 // 			connfd = accept(sockfd, (struct sockaddr *)&cliaddr, &len_cli);
@@ -304,9 +305,9 @@ int main(int argc, char **argv)
 // 					FD_CLR(sockId, &atv_set);
 // 					sprintf(buff_sd, "server: client %d just left\n", g_cliId[sockId]);
 // 					send_msg(sockId);
-// 					close(sockId);
 // 					if (cliBuff[sockId] != 0)
 // 						free(cliBuff[sockId]);
+// 					close(sockId);
 // 				}
 // 				else
 // 				{

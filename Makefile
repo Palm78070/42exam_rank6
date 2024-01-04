@@ -16,7 +16,7 @@ $(NAME): $(OBJS)
 clean:
 	rm -rf *.o *.dSYM
 
-fclean:
+fclean: clean
 	rm -rf $(NAME)
 
 re: fclean all
