@@ -1,9 +1,9 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <netinet/in.h>
+#include <stdlib.h>
 #include <sys/socket.h>
+#include <netinet/in.h>
 
 int maxSock;
 char *msg = NULL;
@@ -49,11 +49,12 @@ int extract_msg(char **buff, char **msg)
 	*msg = 0;
 	if (*buff == 0)
 		return (0);
+
 	while ((*buff)[i])
 	{
 		if ((*buff)[i] == '\n')
 		{
-			newbuff = calloc(strlen(*buff + i + 1), sizeof(*newbuff));
+			newbuff = calloc(strlen(*buff + i + 1) + 1, sizeof(*newbuff));
 			if (!newbuff)
 				return (-1);
 			strcpy(newbuff, (*buff + i + 1));
@@ -84,11 +85,12 @@ int main(int argc, char **argv)
 {
 	if (argc != 2)
 		ft_error("Wrong number of arguments\n");
-	int sockfd, cliId, connfd;
+
+	int sockfd, connfd, cliId;
 	cliId = 0;
 	struct sockaddr_in servaddr, cliaddr;
-	socklen_t len_cli = sizeof(cliaddr);
 	bzero(&servaddr, sizeof(servaddr));
+	socklen_t len_cli = sizeof(cliaddr);
 
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
@@ -159,16 +161,16 @@ int main(int argc, char **argv)
 			}
 		}
 	}
+
 	return (0);
 }
 
 // #include <stdio.h>
+// #include <stdlib.h>
 // #include <string.h>
 // #include <unistd.h>
-// #include <string.h>
-// #include <stdlib.h>
-// #include <sys/socket.h>
 // #include <netinet/in.h>
+// #include <sys/socket.h>
 
 // int maxSock;
 // char *msg = NULL;
@@ -221,7 +223,6 @@ int main(int argc, char **argv)
 // 			newbuff = calloc(strlen(*buff + i + 1), sizeof(*newbuff));
 // 			if (!newbuff)
 // 				return (-1);
-// 			newbuff[0] = 0;
 // 			strcpy(newbuff, (*buff + i + 1));
 // 			*msg = *buff;
 // 			(*msg)[i + 1] = 0;
@@ -253,8 +254,8 @@ int main(int argc, char **argv)
 // 	int sockfd, cliId, connfd;
 // 	cliId = 0;
 // 	struct sockaddr_in servaddr, cliaddr;
-// 	bzero(&servaddr, sizeof(servaddr));
 // 	socklen_t len_cli = sizeof(cliaddr);
+// 	bzero(&servaddr, sizeof(servaddr));
 
 // 	servaddr.sin_family = AF_INET;
 // 	servaddr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);

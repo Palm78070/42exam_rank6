@@ -23,7 +23,6 @@ re: fclean all
 
 .PHONY: all clean fclean re
 
-
 # NAME := outfile
 
 # CC := gcc
